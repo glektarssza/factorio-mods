@@ -1,0 +1,14 @@
+{
+    "name": "flow_control_expanded_bob_sea_block_bridge",
+    "version": "0.0.2",
+    "factorio_version": "1.1",
+    "title": "Flow Control for Bob's Logistics/Sea Block Bridge",
+    "author": "G'lek Tarssza",
+    "homepage": "https://mods.factorio.com/user/glektarssza",
+    "description": "A bunch of changes to bridge the gap between Flow Control for Bob's Logistics and Sea Block",
+    "dependencies": [
+        "flow-control-expanded-bob",
+        "SeaBlock",
+        "osm-lib >= 1.1.28"
+    ]
+}
