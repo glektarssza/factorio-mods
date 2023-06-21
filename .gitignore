@@ -1,0 +1,15 @@
+# Editors #
+## Visual Studio Code ##
+### Workspace Folder ###
+.vscode/*
+
+### Exceptions ###
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Logs #
+*.log*
+
+# Artifacts #
+*.zip
