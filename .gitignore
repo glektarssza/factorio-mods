@@ -13,3 +13,5 @@
 
 # Artifacts #
 *.zip
+staging/
+dist/
