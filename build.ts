@@ -1,6 +1,6 @@
-const fs = require("node:fs");
-const path = require("node:path");
-const { execSync } = require("node:child_process");
+import fs from "node:fs";
+import path from "node:path";
+import { execSync } from "node:child_process";
 
 const copy = (src: string, dest: string) => {
     if (!fs.existsSync(src)) {
@@ -29,7 +29,7 @@ const copy = (src: string, dest: string) => {
     //-- Copy directory to directory
     if (srcStat.isDirectory() && destStat.isDirectory()) {
         const files = fs.readdirSync(src);
-        files.forEach((file: string) => {
+        files.forEach((file) => {
             copy(path.resolve(src, file), path.resolve(dest, file));
         });
         return;
@@ -47,7 +47,7 @@ const removeDir = (dir: string) => {
         return;
     } else if (stat.isDirectory()) {
         const files = fs.readdirSync(dir);
-        files.forEach((file: string) => {
+        files.forEach((file) => {
             removeDir(path.resolve(dir, file));
         });
         fs.rmdirSync(dir);
