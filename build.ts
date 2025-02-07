@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("node:fs");
+const path = require("node:path");
+const { execSync } = require("node:child_process");
 
-const copy = (src, dest) => {
+const copy = (src: string, dest: string) => {
     if (!fs.existsSync(src)) {
         throw new Error(`${src} does not exist`);
     }
@@ -11,8 +11,8 @@ const copy = (src, dest) => {
     if (!fs.existsSync(dest) && srcStat.isDirectory()) {
         fs.mkdirSync(dest);
     } else if (!fs.existsSync(dest) && srcStat.isFile()) {
-        fs.writeFileSync(dest, '', {
-            encoding: 'utf8'
+        fs.writeFileSync(dest, "", {
+            encoding: "utf8",
         });
     }
     const destStat = fs.statSync(dest);
@@ -29,7 +29,7 @@ const copy = (src, dest) => {
     //-- Copy directory to directory
     if (srcStat.isDirectory() && destStat.isDirectory()) {
         const files = fs.readdirSync(src);
-        files.forEach((file) => {
+        files.forEach((file: string) => {
             copy(path.resolve(src, file), path.resolve(dest, file));
         });
         return;
@@ -37,7 +37,7 @@ const copy = (src, dest) => {
     throw new Error(`Cannot copy ${src} to ${dest}`);
 };
 
-const removeDir = (dir) => {
+const removeDir = (dir: string) => {
     if (!fs.existsSync(dir)) {
         return;
     }
@@ -47,22 +47,21 @@ const removeDir = (dir) => {
         return;
     } else if (stat.isDirectory()) {
         const files = fs.readdirSync(dir);
-        files.forEach((file) => {
+        files.forEach((file: string) => {
             removeDir(path.resolve(dir, file));
         });
         fs.rmdirSync(dir);
     }
 };
 
-const build = (modName) => {
-
+const build = (modName: string) => {
     const modPath = path.resolve(root, modName);
     const modStaging = path.resolve(staging, modName);
 
     if (!fs.existsSync(modPath)) {
         throw new Error(`Mod ${modName} does not exist`);
     }
-    const modInfo = require(path.resolve(modPath, 'info.json'));
+    const modInfo = require(path.resolve(modPath, "info.json"));
     const modVersion = modInfo.version;
     const modArchiveName = `${modName}_${modVersion}.zip`;
 
@@ -74,53 +73,61 @@ const build = (modName) => {
     }
 
     copy(modPath, modStaging);
-    copy(readme, path.resolve(modStaging, 'README.md'));
-    copy(license, path.resolve(modStaging, 'LICENSE.md'));
+    copy(readme, path.resolve(modStaging, "README.md"));
+    copy(license, path.resolve(modStaging, "LICENSE.md"));
 
     if (!fs.existsSync(dist)) {
         fs.mkdirSync(dist);
     }
 
-    const command = `7z a -tzip -mx=9 -r ${path.resolve(dist, modArchiveName)} ${modStaging}`;
+    const command = `7z a -tzip -mx=9 -r ${path.resolve(
+        dist,
+        modArchiveName
+    )} ${modStaging}`;
 
     execSync(command, {
-        stdio: 'inherit',
-        encoding: 'utf8'
+        stdio: "inherit",
+        encoding: "utf8",
     });
 
     removeDir(modStaging);
 };
 
 const root = path.resolve(__dirname);
-const readme = path.resolve(root, 'README.md');
-const license = path.resolve(root, 'LICENSE.md');
-const staging = path.resolve(root, 'staging');
-const dist = path.resolve(root, 'dist');
-let modNameArg = null;
+const readme = path.resolve(root, "README.md");
+const license = path.resolve(root, "LICENSE.md");
+const staging = path.resolve(root, "staging");
+const dist = path.resolve(root, "dist");
+let modNameArg: string | null = null;
 
 process.argv.forEach((arg) => {
-    if (arg.includes('node') || arg.includes('.js')) {
+    if (arg.includes("node") || arg.includes(".js")) {
         return;
     }
     if (modNameArg === null) {
         modNameArg = arg;
     } else {
-        throw new Error('Only one mod name can be specified');
+        throw new Error("Only one mod name can be specified");
     }
 });
 
 if (modNameArg === null) {
-    throw new Error('No mod name specified');
+    throw new Error("No mod name specified");
 }
 
-if (modNameArg === '*') {
+if (modNameArg === "*") {
     const modNames = fs.readdirSync(root);
-    modNames.forEach((modName) => {
+    modNames.forEach((modName: string) => {
         const stat = fs.statSync(path.resolve(root, modName));
         if (!stat.isDirectory()) {
             return;
         }
-        if (modName === 'staging' || modName === 'dist' || modName === '.vscode' || modName === '.git') {
+        if (
+            modName === "staging" ||
+            modName === "dist" ||
+            modName === ".vscode" ||
+            modName === ".git"
+        ) {
             return;
         }
         build(modName);
